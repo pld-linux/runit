@@ -7,12 +7,14 @@ Group:		Daemons
 URL:		http://smarden.org/runit/
 Source0:	http://smarden.org/runit/%{name}-%{version}.tar.gz
 # Source0-md5:	35448e97188544914f298c88871ab984
-#Source1:	%{name}.svup
-#Source2:	%{name}.svdown
-#Source3:	%{name}.svdepcalc
-#Source4:	%{name}.dependencies.README
+Patch0:		%{name}-nostatic.patch
+Source1:	http://fisheye1.cenqua.com/browse/~raw,r=1.1/smeserver/runit/S/%{name}.svup
+Source2:	http://fisheye1.cenqua.com/browse/~raw,r=1.1/smeserver/runit/S/%{name}.svdown
+Source3:	http://fisheye1.cenqua.com/browse/~raw,r=1.1/smeserver/runit/S/%{name}.svdepcalc
+Source4:	http://fisheye1.cenqua.com/browse/~raw,r=1.1/smeserver/runit/S/%{name}.dependencies.README
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
-BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%define		_sbindir	/sbin
 
 %description
 runit is a daemontools alike replacement for sysvinit and other init
@@ -28,22 +30,24 @@ init=/bin/sh to the kernel.
 %prep
 %setup -qc
 mv admin/%{name}-%{version}/* .
+%patch0 -p1
+cp -a %{SOURCE4} doc/dependencies.README
+rm -f doc/debian
 
 %build
 echo '%{__cc} %{rpmldflags}' > src/conf-ld
-echo '%{__cc] %{rpmcflags} -Wall' > src/conf-cc
+echo '%{__cc} %{rpmcflags} -Wall' > src/conf-cc
 ./package/compile
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_bindir}
-install %{SOURCE1} command/svisup
-install %{SOURCE2} command/svisdown
-install %{SOURCE3} command/svdepcalc
-install %{SOURCE4} doc/dependencies.README
-for i in $(cat package/commands) svisup svisdown svdepcalc; do
-	install command/$i $RPM_BUILD_ROOT%{_bindir}
+install -d $RPM_BUILD_ROOT%{_sbindir}
+for i in $(cat package/commands); do
+	install command/$i $RPM_BUILD_ROOT%{_sbindir}
 done
+install %{SOURCE1} $RPM_BUILD_ROOT%{_sbindir}/svisup
+install %{SOURCE2} $RPM_BUILD_ROOT%{_sbindir}/svisdown
+install %{SOURCE3} $RPM_BUILD_ROOT%{_sbindir}/svdepcalc
 install -d $RPM_BUILD_ROOT%{_mandir}/man8
 install man/*.8 $RPM_BUILD_ROOT%{_mandir}/man8
 
@@ -52,8 +56,6 @@ rm -r $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc admin/%{name}-%{version}/package/COPYING
-%doc admin/%{name}-%{version}/doc/*
-%attr(755,root,root) %{_bindir}/*
+%doc doc/*
+%attr(755,root,root) %{_sbindir}/*
 %{_mandir}/man8/*
-#%{_mandir}/man1/*
