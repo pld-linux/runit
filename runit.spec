@@ -19,7 +19,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %description
 runit is a daemontools alike replacement for sysvinit and other init
 schemes. runit runs on GNU/Linux, OpenBSD, FreeBSD, and can easily be
-adapted to other unix operating systems. If runit runs for you on any
+adapted to other Unix operating systems. If runit runs for you on any
 other operating system or Linux distribution, please let me know.
 
 Warning: Replacing sysvinit or init can cause the system's boot to
