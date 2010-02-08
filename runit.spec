@@ -1,12 +1,12 @@
 Summary:	A UNIX init scheme with service supervision
 Summary(pl.UTF-8):	Implementacja uniksowego inita z dozorem usług
 Name:		runit
-Version:	2.0.0
+Version:	2.1.1
 Release:	0.1
 License:	BSD style
 Group:		Daemons
 Source0:	http://smarden.org/runit/%{name}-%{version}.tar.gz
-# Source0-md5:	63c53d313736f444a53a7451bfa76991
+# Source0-md5:	8fa53ea8f71d88da9503f62793336bc3
 Patch0:		%{name}-nostatic.patch
 Source1:	http://fisheye1.cenqua.com/browse/~raw,r=1.1/smeserver/runit/S/%{name}.svup
 Source2:	http://fisheye1.cenqua.com/browse/~raw,r=1.1/smeserver/runit/S/%{name}.svdown
