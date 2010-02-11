@@ -8,10 +8,12 @@ Group:		Daemons
 Source0:	http://smarden.org/runit/%{name}-%{version}.tar.gz
 # Source0-md5:	8fa53ea8f71d88da9503f62793336bc3
 Patch0:		%{name}-nostatic.patch
+# Are Source[1-4] needed?
 Source1:	http://fisheye1.cenqua.com/browse/~raw,r=1.1/smeserver/runit/S/%{name}.svup
 Source2:	http://fisheye1.cenqua.com/browse/~raw,r=1.1/smeserver/runit/S/%{name}.svdown
 Source3:	http://fisheye1.cenqua.com/browse/~raw,r=1.1/smeserver/runit/S/%{name}.svdepcalc
 Source4:	http://fisheye1.cenqua.com/browse/~raw,r=1.1/smeserver/runit/S/%{name}.dependencies.README
+Source10:	%{name}-stage-1
 URL:		http://smarden.org/runit/
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -29,13 +31,21 @@ init=/bin/sh to the kernel.
 
 %description -l pl.UTF-8
 runit to podobny do daemontools zamiennik demona SysVinit i innych
-rodzajów procesu init. Działa na systemach GNU/Linux, OpenBSD
-i FreeBSD, może być łatwo zaadaptowany do innych systemów uniksowych.
+rodzajów procesu init. Działa na systemach GNU/Linux, OpenBSD i
+FreeBSD, może być łatwo zaadaptowany do innych systemów uniksowych.
 
 Uwaga: podmiana pakietu SysVinit lub innego inita może spowodować, że
 system nie będzie mógł się uruchomić. Należy się upewnić, że jest
 możliwość odtworzenia i naprawy systemu, na przykład z poziomu
 bootloadera przez przekazanie do jądra init=/bin/sh.
+
+%package scripts
+Summary:	Scripts for runit
+Group:		Base
+Requires:	%{name} = %{version}-%{release}
+
+%description scripts
+Scripts for runit.
 
 %prep
 %setup -qc
@@ -61,6 +71,9 @@ install %{SOURCE3} $RPM_BUILD_ROOT%{_sbindir}/svdepcalc
 install -d $RPM_BUILD_ROOT%{_mandir}/man8
 install man/*.8 $RPM_BUILD_ROOT%{_mandir}/man8
 
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/runit
+install %{SOURCE10} $RPM_BUILD_ROOT%{_sysconfdir}/runit/1
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -69,3 +82,8 @@ rm -rf $RPM_BUILD_ROOT
 %doc doc/*
 %attr(755,root,root) %{_sbindir}/*
 %{_mandir}/man8/*
+
+%files scripts
+%defattr(644,root,root,755)
+%dir %{_sysconfdir}/runit
+%{_sysconfdir}/runit/1
